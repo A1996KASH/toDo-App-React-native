@@ -69,22 +69,26 @@ export default class App extends Component {
   }
 
   // Update state from Async storage
-  componentDidMount() {
+ componentDidMount() {
     this.retrieveItem('tasks').then((res) => {
       //this callback is executed when your Promise is resolved
-      this.setState({ tasks: res })
+      this.setState(previousState => {
+        return { 
+          ...previousState,
+          tasks: res };
+      });
     }).catch((error) => {
       //this callback is executed when your Promise is rejected
       console.log('Promise is rejected with error: ' + error);
     });
-  }
+  } 
   render() {
-
-    let task = this.state.tasks.map(((val, index) => {
-      return <List key={index} keyval={index} task={val} deleteMethod={() => this.deleteMethod(index)} />
-    }));
-    if (this.state.tasks.length == 0) {
+    let task =null;
       task = <View style={{ alignItems: 'center', paddingTop: '50%' }}><Text style={{ color: '#000' }}>Your tasks Will come Here</Text></View>
+    if(this.state.tasks.length != 0){
+      task = this.state.tasks.map(((val, index) => {
+        return <List key={index} keyval={index} task={val} deleteMethod={() => this.deleteMethod(index)} />
+      }));
     }
     return (
       <View style={styles.container}>
