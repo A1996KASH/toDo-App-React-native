@@ -16,7 +16,7 @@ import {
   AsyncStorage,
   Button
 } from 'react-native';
-import List from './src/components/list.js'
+import List from './src/components/list.js'//Import Component List to display a single task 
 
 export default class App extends Component {
   state = {
@@ -24,6 +24,9 @@ export default class App extends Component {
     taskText: '',
 
   }
+  //state to manage Task Lists
+
+  //Add note to states tasks
   addNotes = () => {
     if (this.state.taskText) {
       this.state.tasks.push(this.state.taskText);
@@ -33,11 +36,9 @@ export default class App extends Component {
     }
   }
 
-
+// Store task in Asyncs storage
   async storeItem(key, item) {
     try {
-      //we want to wait for the Promise returned by AsyncStorage.setItem()
-      //to be resolved to the actual value before returning the value
       var jsonOfItem = await AsyncStorage.setItem(key, JSON.stringify(item));
       return jsonOfItem;
     } catch (error) {
@@ -45,6 +46,7 @@ export default class App extends Component {
     }
   }
 
+  //retrive Item from Async Storage
   async retrieveItem(key) {
     try {
       const retrievedItem = await AsyncStorage.getItem(key);
@@ -59,11 +61,14 @@ export default class App extends Component {
 
 
 
+  //Delte method to remove task from state
   deleteMethod = (index) => {
     this.state.tasks.splice(index, 1);
     this.setState({ task: this.state.tasks });
     this.storeItem('tasks', this.state.tasks);
   }
+
+  // Update state from Async storage
   componentDidMount() {
     this.retrieveItem('tasks').then((res) => {
       //this callback is executed when your Promise is resolved
@@ -74,13 +79,13 @@ export default class App extends Component {
     });
   }
   render() {
-   
-      let task = this.state.tasks.map(((val, index) => {
-        return <List key={index} keyval={index} task={val} deleteMethod={() => this.deleteMethod(index)} />
-      }));  
-      if(this.state.tasks.length == 0){
-       task = <View style={{alignItems: 'center',paddingTop:'50%'}}><Text style={{color: '#000'}}>Your tasks Will come Here</Text></View>
-      }
+
+    let task = this.state.tasks.map(((val, index) => {
+      return <List key={index} keyval={index} task={val} deleteMethod={() => this.deleteMethod(index)} />
+    }));
+    if (this.state.tasks.length == 0) {
+      task = <View style={{ alignItems: 'center', paddingTop: '50%' }}><Text style={{ color: '#000' }}>Your tasks Will come Here</Text></View>
+    }
     return (
       <View style={styles.container}>
         <View style={styles.header}>
